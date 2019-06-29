@@ -1,6 +1,7 @@
 package com.diy.dagon.remote;
 
 import com.diy.dagon.handler.RpcClientInvocationHandler;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Proxy;
 
@@ -9,9 +10,10 @@ import java.lang.reflect.Proxy;
  *
  * 采用jdk的动态代理
  */
+@Component
 public class RpcClientProxy {
 
-    public static <T> T proxy(final Class<?> interfaceCls, final String host, final int port) {
+    public <T> T proxy(final Class<?> interfaceCls, final String host, final int port) {
 
         return (T) Proxy.newProxyInstance(interfaceCls.getClassLoader(), new Class[]{interfaceCls},
                 new RpcClientInvocationHandler(host, port));

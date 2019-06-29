@@ -28,6 +28,7 @@ public class RpcClientInvocationHandler implements InvocationHandler {
         request.setClassName(method.getDeclaringClass().getName());
         request.setMethodName(method.getName());
         request.setParameters(args);
+        request.setVersion("v1.0");
 
         return new RpcNetTransport(host, port).sendRequest(request);
     }

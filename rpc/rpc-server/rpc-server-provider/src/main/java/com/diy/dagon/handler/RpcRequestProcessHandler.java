@@ -1,6 +1,7 @@
 package com.diy.dagon.handler;
 
 import com.diy.dagon.request.RpcRequest;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -8,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.Socket;
+import java.util.Map;
 
 /**
  * Created by Dagon on 2019/6/29 - 9:19
@@ -16,11 +18,11 @@ public class RpcRequestProcessHandler implements Runnable {
 
     private Socket socket;
 
-    private Object service;
+    private Map<String,Object> handlerMap;
 
-    public RpcRequestProcessHandler(Socket socket, Object service) {
+    public RpcRequestProcessHandler(Socket socket, Map<String,Object> handlerMap) {
         this.socket = socket;
-        this.service = service;
+        this.handlerMap = handlerMap;
     }
 
     @Override
@@ -54,6 +56,19 @@ public class RpcRequestProcessHandler implements Runnable {
 
 
     private Object methodInvoke(RpcRequest rpcRequest) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        String serviceName = rpcRequest.getClassName();
+
+        if (!StringUtils.isEmpty(rpcRequest.getVersion())) {
+            serviceName += "-" + rpcRequest.getVersion();
+        }
+
+        Object service = handlerMap.get(serviceName);
+        if (service == null) {
+            throw new RuntimeException("service not found,serviceName:"+serviceName);
+        }
+
+
+
         Class<?> clazz = Class.forName(rpcRequest.getClassName());
 
         //要拿到Method，不要参数集合Class<?>[]
