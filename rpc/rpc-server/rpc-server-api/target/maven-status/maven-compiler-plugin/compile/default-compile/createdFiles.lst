@@ -1,0 +1,5 @@
+com\diy\dagon\service\IHelloSerivce.class
+com\diy\dagon\App.class
+com\diy\dagon\pojo\User.class
+com\diy\dagon\util\StreamCloserUtil.class
+com\diy\dagon\request\RpcRequest.class
